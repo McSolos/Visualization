@@ -3,6 +3,7 @@
 |-- index.html
 |-- package-lock.json
 |-- package.json
+|-- postcss.config.js
 |-- public
     |-- vite.svg
 |-- README.md
@@ -12,8 +13,10 @@
     |-- assets
         |-- react.svg
     |-- components
+        |-- charts.jsx
         |-- something.css
         |-- TreeView.jsx
     |-- index.css
     |-- main.jsx
+|-- tailwind.config.js
 |-- vite.config.js

@@ -2,9 +2,12 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import './index.css';
+
 import MapView from './components/TreeView' 
 import Tree from 'react-d3-tree';
 import TreeView from './components/TreeView'
+import Chart from './components/charts'
 
 function App() {
 
@@ -74,8 +77,24 @@ function App() {
   
 
 
-  return <TreeView data={data} />;
-};
+  return (
+    <div className="min-h-screen bg-gray-50 p-6 flex flex-col gap-6">
+      {/* Hierarchical Tree Section */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Hierarchical Tree Diagram
+        </h2>
+        <div className="p-4 border border-gray-200 rounded-md">
+          <TreeView data={data} />
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <Chart />
+      </div>
+    </div>
+)};
 
 
 
