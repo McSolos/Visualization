@@ -16,7 +16,9 @@ import Error from './assets/error-icon-4.png'
 import CollapsibleNav from './components/CollapsibleNav';
 import Status from './components/Status';
 // import { generateData } from './GenerateData';
-import Guage from './components/GaugeOverview';
+// import Guage from './components/GaugeOverview';
+import Guage from './components/GuageChart'
+
 
 
 
@@ -125,7 +127,7 @@ function App() {
                           "lastChange": "2025-01-20 00:25:12"
                         },
                         {
-                          "ID": 1,
+                          "ID": 2,
                           "status": "UP",
                           "serial": "RCMG1234BEEF",
                           "deviceType": "Raisecom",
@@ -145,7 +147,7 @@ function App() {
           "location": "Ikeja GRA, Lagos",
           "OLTs": [
             {
-              "description": "HQ-OLT-1",
+              "description": "Ikeja-OLT-1",
               "status": "operational",
               "slots": [
                 {
@@ -202,16 +204,12 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 p-6 flex flex-col gap-6">
       {/* Hierarchical Tree Section */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      {/* Fixed Sidebar */}
+      <div className="w-64 h-screen bg-white shadow-md fixed top-0 left-0 p-4">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
           Hierarchical Tree Diagram
         </h2>
-        <div className="flex p-4 border border-gray-200 rounded-md">
-          {/* <TreeView data={data} /> */}
-          <div className=" bg-gray-50 flex items-center ">
-            <CollapsibleNav data={data} />
-          </div>
-        </div>
+        <CollapsibleNav data={data} />
       </div>
 
       {/* Charts Section */}
@@ -220,7 +218,7 @@ function App() {
       </div>
       {/* Status Section */}
       <div className="flex flex-row justify-center items-center bg-white shadow-lg rounded-lg p-6">
-        {/* <Status data={data}/> */}
+        <Status data={data}/>
       </div>
       
       <div className="justify-around">
@@ -228,7 +226,7 @@ function App() {
 
       {/* guage Section */}
       <div className="flex flex-col items-center bg-white shadow-lg rounded-lg p-6 text-black">
-        {/* <Guage data={data} /> */}
+        <Guage data={data} />
       </div>
 
     </div>
