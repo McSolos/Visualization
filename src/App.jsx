@@ -160,7 +160,7 @@ function App() {
                       "ONTs": [
                         {
                           "ID": 1,
-                          "status": "DOWN",
+                          "status": "dyinggaspreceived",
                           "serial": "RCMG1234BEEF",
                           "deviceType": "Raisecom",
                           "OntRxPower": "-26.71 dBm",
@@ -180,7 +180,7 @@ function App() {
                       "ONTs": [
                         {
                           "ID": 1,
-                          "status": "DOWN",
+                          "status": "down",
                           "serial": "RCMG1234BEEF",
                           "deviceType": "Raisecom",
                           "OntRxPower": "-26.71 dBm",
