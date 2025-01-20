@@ -103,7 +103,7 @@ function GuageChart({ data }) {
             textColor=""
           />
           <h3>Slots</h3>
-          <p>Percentage: {(slotPercentage * 100).toFixed(1)}%</p>
+          <p>Percentage: {(slotPercentage * 100).toFixed(1)}% are Up and Active {slotPercentage}</p>
         </div>
 
         {/* PON Port Gauge */}

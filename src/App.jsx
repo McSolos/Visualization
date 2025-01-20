@@ -212,6 +212,10 @@ function App() {
         <CollapsibleNav data={data} />
       </div>
 
+      <div className="justify-around bg-white shadow-lg rounded-lg p-6">
+        {/* <Chart data={data} /> */}
+      </div>
+
       {/* Charts Section */}
       <div className="justify-around bg-white shadow-lg rounded-lg p-6">
         <Chart data={data} />

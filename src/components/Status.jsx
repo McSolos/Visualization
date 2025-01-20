@@ -27,7 +27,7 @@ function Status({ data }) {
         downNodes: selectedOLTData.slots.flatMap((slot) =>
           slot.PONPorts.flatMap((ponPort) =>
             ponPort.ONTs.filter((ont) => !isUp(ont.status)).map(
-              (ont) => `${ont.deviceType} (ID: ${ont.ID}) failed (${selectedOLTData.description} > ${slot.ID} > ${ponPort.ID}   ______LastChange: ${ont.lastChange})`
+              (ont) => `${ont.deviceType} (ONT ID: ${ont.ID}) failed (${selectedOLTData.description} > ${ `Slot ${slot.ID}`} > ${ `PON Port ${ponPort.ID}`} ) ______LastChange: ${ont.lastChange}`
             )
           )
         ),
