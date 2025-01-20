@@ -5,16 +5,29 @@
 |-- package.json
 |-- postcss.config.js
 |-- public
+    |-- assets
+        |-- causion.png
+        |-- check.png
+        |-- dropdown_arrow2-512.webp
+        |-- error-icon-4.png
     |-- vite.svg
 |-- README.md
 |-- src
     |-- App.css
     |-- App.jsx
     |-- assets
+        |-- causion.png
+        |-- check.png
+        |-- dropdown_arrow2-512.webp
+        |-- error-icon-4.png
         |-- react.svg
     |-- components
         |-- charts.jsx
+        |-- CollapsibleNav.jsx
+        |-- GaugeOverview.jsx
+        |-- Guage.jsx
         |-- something.css
+        |-- Status.jsx
         |-- TreeView.jsx
     |-- index.css
     |-- main.jsx
