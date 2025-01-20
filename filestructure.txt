@@ -24,8 +24,8 @@
     |-- components
         |-- charts.jsx
         |-- CollapsibleNav.jsx
-        |-- GaugeOverview.jsx
         |-- Guage.jsx
+        |-- GuageChart.jsx
         |-- something.css
         |-- Status.jsx
         |-- TreeView.jsx

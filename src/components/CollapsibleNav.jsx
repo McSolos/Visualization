@@ -35,21 +35,25 @@ const CollapsibleNav = ({ data }) => {
     setOpenItems((prevState) => ({ ...prevState, [id]: !prevState[id] }));
   };
 
-  // Determine background color based on status
+
   const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'down':
-      case 'failed':
-        return 'bg-red-500 text-white';
-      case 'caution':
-        return 'bg-yellow-500 text-black';
-      case 'up':
-      case 'operational':
-        return 'bg-green-500 text-white';
-      default:
-        return 'bg-gray-100';
+    const normalizedStatus = status?.toLowerCase();
+  
+    if (normalizedStatus === 'up' || normalizedStatus === 'operational') {
+      return 'bg-green-500 text-white'; // UP or OPERATIONAL
     }
+  
+    if (normalizedStatus === 'dyinggaspreceived') {
+      return 'bg-gray-500 text-black'; // Warning status
+    }
+  
+    if (!normalizedStatus || ['error', ''].includes(normalizedStatus)) {
+      return 'bg-gray-100'; // Default for error or unknown statuses
+    }
+  
+    return 'bg-red-500 text-white'; // OTHERS
   };
+  
 
   // Recursive function to render the hierarchy
   const renderTree = (node, parentId = '') => {
