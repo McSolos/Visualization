@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GaugeChart from 'react-gauge-chart';
 
 function GuageChart({ data }) {
@@ -10,8 +10,24 @@ function GuageChart({ data }) {
     const upCount = items.filter(
       (item) => item[statusKey]?.toLowerCase() === 'up' || item[statusKey]?.toLowerCase() === operationalStatus.toLowerCase()
     ).length;
-    return total > 0 ? upCount / total : 0; // Return percentage as a decimal
+    return total > 0 ? upCount / total : 0; 
   };
+
+  //   const calculatePercentageDGR = (items, statusKey = 'status', operationalStatus = 'dyinggaspreceived') => {
+  //   const total = items.length;
+  //   const upCount = items.filter(
+  //     (item) => item[statusKey]?.toLowerCase() === 'dyinggaspreceived' 
+  //   ).length;
+  //   return total > 0 ? upCount / total : 0; 
+  // };
+
+  // const calculatePercentageOthers = (items, statusKey = 'status', operationalStatus = 'operational') => {
+  //   const total = items.length;
+  //   const upCount = items.filter(
+  //     (item) => item[statusKey]?.toLowerCase() === 'down' 
+  //   ).length;
+  //   return total > 0 ? upCount / total : 0; 
+  // };
 
   // Filter data by the selected Central Office
   const filteredData = selectedCO === 'ALL'

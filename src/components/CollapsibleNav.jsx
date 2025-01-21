@@ -1,45 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-const CollapsibleNav = ({ data, onONTClick }) => {
+const CollapsibleNav = ({ data, onSelectONT }) => {
   const [openItems, setOpenItems] = useState({});
 
-  useEffect(() => {
-    const initializeOpenItems = (node, parentId = "", level = 0) => {
-      const id = parentId ? `${parentId}-${node.description}` : node.description;
-      let newOpenItems = {};
-  
-      // Expand nodes up to level 2 (OLT level)
-      if (level < 3) {
-        newOpenItems[id] = true;
-      }
-  
-      if (node.children && Array.isArray(node.children)) {
-        node.children.forEach((child) => {
-          newOpenItems = {
-            ...newOpenItems,
-            ...initializeOpenItems(child, id, level + 1),
-          };
-        });
-      }
-  
-      return newOpenItems;
-    };
-  
-    if (data) {
-      setOpenItems((prevState) => ({
-        ...prevState,
-        ...initializeOpenItems(data),
-      }));
-    }
-  }, [data]);
-  
-  
-  // Initialize openItems state
-  // useEffect(() => {
-  //   setOpenItems(initializeOpenItems(data));
-  // }, [data]);
-
-  // Toggles the visibility of children
   const toggleItem = (id) => {
     setOpenItems((prevState) => ({ ...prevState, [id]: !prevState[id] }));
   };
@@ -62,30 +25,39 @@ const CollapsibleNav = ({ data, onONTClick }) => {
     return "bg-red-500 text-white"; // OTHERS
   };
 
-  // Recursive function to render the hierarchy
-  const renderTree = (node, parentId = "") => {
-    const id = parentId ? `${parentId}-${node.description || node.ID}` : node.description || node.ID;
+  const renderTree = (node, parentId = "", prefix = "") => {
+    const id = parentId
+      ? `${parentId}-${node.description || `${prefix} ${node.ID}`}`
+      : node.description || `${prefix} ${node.ID}`;
     const children = node.OLTs || node.slots || node.PONPorts || node.ONTs;
 
-    const isONT = Boolean(node.serial); // Check if the node is an ONT
+    // Determine prefix based on the node type
+    const newPrefix = node.OLTs
+      ? "OLT"
+      : node.slots
+      ? "Slot"
+      : node.PONPorts
+      ? "PON Port"
+      : node.ONTs
+      ? "ONT"
+      : "";
 
     return (
       <div key={id} className="pl-4">
         {/* Parent or ONT Item */}
         <div
-          className={`flex items-center justify-between cursor-pointer py-2 px-4 rounded-md hover:bg-opacity-80 ${getStatusColor(
-            node.status
-          )}`}
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent event propagation
-            if (isONT) {
-              onONTClick(node); // Call onONTClick with ONT details
-            } else {
-              toggleItem(id); // Toggle for non-ONT items
+          className={`flex items-center justify-between cursor-pointer py-2 px-4 rounded-md hover:bg-opacity-80  
+            ${getStatusColor(node.status)}`}
+          onClick={() => {
+            if (!children && onSelectONT) {
+              onSelectONT(node); // Pass ONT details to parent component
             }
+            toggleItem(id);
           }}
         >
-          <span className="text-sm font-medium">{node.description || `ID: ${node.ID}`}</span>
+          <span className="text-sm font-medium ">
+            {node.description || `${prefix} ${node.ID}`}
+          </span>
           {children && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -106,8 +78,10 @@ const CollapsibleNav = ({ data, onONTClick }) => {
 
         {/* Child Items */}
         {children && openItems[id] && (
-          <div className="pl-6">
-            {children.map((child) => renderTree(child, id))}
+          <div className="pl-6 ">
+            {children.map((child) =>
+              renderTree(child, id, newPrefix) // Pass new prefix to children
+            )}
           </div>
         )}
       </div>

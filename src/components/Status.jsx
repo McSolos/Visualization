@@ -10,7 +10,7 @@ function Status({ data }) {
 
   // Utility function to determine if a status is "up"
   const isUp = (status) =>
-    status?.toLowerCase() === 'up' || status?.toLowerCase() === 'operational';
+    status?.toLowerCase() === 'up' || status?.toLowerCase() === 'operational' || status?.toLowerCase() === 'dyinggaspreceived';;
 
   // Filter Central Offices and OLTs
   const centralOffices = data.network.centralOffices;
@@ -27,7 +27,10 @@ function Status({ data }) {
         downNodes: selectedOLTData.slots.flatMap((slot) =>
           slot.PONPorts.flatMap((ponPort) =>
             ponPort.ONTs.filter((ont) => !isUp(ont.status)).map(
-              (ont) => `${ont.deviceType} (ONT ID: ${ont.ID}) failed (${selectedOLTData.description} > ${ `Slot ${slot.ID}`} > ${ `PON Port ${ponPort.ID}`} ) ______LastChange: ${ont.lastChange}`
+              (ont) => `${ont.deviceType} (ONT ID: ${ont.ID}) failed 
+              (${selectedOLTData.description} > 
+              ${ `Slot ${slot.ID}`} > 
+              ${ `PON Port ${ponPort.ID}`} ) ______LastChange: ${ont.lastChange}`
             )
           )
         ),
