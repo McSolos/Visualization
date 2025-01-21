@@ -43,10 +43,10 @@ const CollapsibleNav = ({ data, onSelectONT }) => {
       : "";
 
     return (
-      <div key={id} className="pl-4">
+      <div key={id} className="pr-4">
         {/* Parent or ONT Item */}
         <div
-          className={`flex items-center justify-between cursor-pointer py-2 px-4 rounded-md hover:bg-opacity-80  
+          className={`flex items-center  justify-between cursor-pointer py-2 px-4 rounded-md hover:bg-opacity-80 ml-0  
             ${getStatusColor(node.status)}`}
           onClick={() => {
             if (!children && onSelectONT) {
@@ -62,7 +62,7 @@ const CollapsibleNav = ({ data, onSelectONT }) => {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className={`w-5 h-5 transition-transform ${
-                openItems[id] ? "rotate-90" : ""
+                openItems[id] ? "" : "-rotate-90"
               }`}
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -78,7 +78,7 @@ const CollapsibleNav = ({ data, onSelectONT }) => {
 
         {/* Child Items */}
         {children && openItems[id] && (
-          <div className="pl-6 ">
+          <div className="">
             {children.map((child) =>
               renderTree(child, id, newPrefix) // Pass new prefix to children
             )}
