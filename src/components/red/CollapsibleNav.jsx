@@ -3,17 +3,12 @@ import React, { useState, useEffect } from "react";
 const CollapsibleNav = ({ data, onSelectONT }) => {
   const [openItems, setOpenItems] = useState({});
 
-  // Precompute openItems to expand all nodes up to the PONPort level by default
+  // Precompute openItems to expand all nodes by default
   useEffect(() => {
     const initializeOpenItems = (node, parentId = "") => {
       const id = parentId
         ? `${parentId}-${node.description || node.ID}`
         : node.description || node.ID;
-
-      // Stop recursion if the current node has ONTs (don't expand ONTs)
-      if (node.ONTs) return { [id]: true }; // change here ooooooo for where to end view
-
-      // Expand if the current node has OLTs, slots, or PONPorts
       const children = node.OLTs || node.slots || node.PONPorts || node.ONTs;
 
       const newState = { [id]: true }; // Mark this node as open
@@ -22,7 +17,6 @@ const CollapsibleNav = ({ data, onSelectONT }) => {
           Object.assign(newState, initializeOpenItems(child, id));
         });
       }
-
       return newState;
     };
 
@@ -53,35 +47,21 @@ const CollapsibleNav = ({ data, onSelectONT }) => {
     if (normalizedStatus === "error") {
       return "bg-yellow-500 text-black"; // ERROR
     }
-    return "bg-red-500"; // Default for unknown status
+    return "bg-gray-100"; // Default
   };
 
-  // Render the tree of nodes
   const renderTree = (node, parentId = "") => {
     const id = parentId
       ? `${parentId}-${node.description || node.ID}`
       : node.description || node.ID;
     const children = node.OLTs || node.slots || node.PONPorts || node.ONTs;
-  
-    // Determine the prefix based on the node type (OLT, Slot, PON Port, or ONT)
-    let newPrefix = "";
-    let ontInfo = "";
-    if (node.PONPorts) newPrefix = "Slot";
-    if (node.ONTs) newPrefix = "PONPort";
-    if (node.serial) {
-      newPrefix = "ONT";
-      ontInfo = ` ${node.serial}`; // ONT serial display
-    }
-  
-    // If node is a central office, get its status and set its color
-    const statusColor = node.status ? getStatusColor(node.status) : "bg-gray-500 text-black";
-  
+
     return (
-      <div key={id} className="pr-4">
+      <div key={id} className="pl-2">
         {/* Parent Item */}
         <div
-          className={`flex items-center justify-between cursor-pointer py-2 px-4 rounded-md hover:bg-opacity-80 ml-0  
-            ${statusColor}`}
+          className={`flex items-center justify-between cursor-pointer py-1 px-4 rounded-md hover:bg-opacity-80 
+            ${getStatusColor(node.status)}`}
           onClick={() => {
             if (!children && onSelectONT) {
               onSelectONT(node); // Pass ONT details to parent component
@@ -89,14 +69,14 @@ const CollapsibleNav = ({ data, onSelectONT }) => {
             toggleItem(id);
           }}
         >
-          <span className="text-sm font-medium">
-            {newPrefix} {node.description || node.ID} {ontInfo && ` ${ontInfo}`}
+          <span className="text-sm font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+            {node.description || node.ID}
           </span>
           {children && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className={`w-5 h-5 transition-transform ${
-                openItems[id] ? "" : "-rotate-90"
+                openItems[id] ? "rotate-90" : ""
               }`}
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -109,25 +89,21 @@ const CollapsibleNav = ({ data, onSelectONT }) => {
             </svg>
           )}
         </div>
-  
+
         {/* Child Items */}
         {children && openItems[id] && (
-          <div
-            className={`${
-              node.ONTs && parentId.includes("PONPort") ? "mb-4" : ""
-            }`}
-          >
+          <div className="pl-6">
             {children.map((child) => renderTree(child, id))}
           </div>
         )}
       </div>
     );
   };
-  
+
   return (
     <div className="w-full max-w-md mx-auto">
       {data.network.centralOffices.map((co) =>
-        renderTree({ description: co.description, status: co.status, OLTs: co.OLTs })
+        renderTree({ description: co.description, status: null, OLTs: co.OLTs })
       )}
     </div>
   );

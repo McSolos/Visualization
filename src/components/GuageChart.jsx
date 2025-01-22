@@ -1,65 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import GaugeChart from 'react-gauge-chart';
+import React, { useState } from "react";
+import GaugeChart from "react-gauge-chart";
 
-function GuageChart({ data }) {
-  const [selectedCO, setSelectedCO] = useState('ALL');
+function GaugeChartComponent({ data }) {
+  const [selectedCO, setSelectedCO] = useState("ALL");
 
-  // Utility to calculate percentages with custom status mapping
-  const calculatePercentage = (items, statusKey = 'status', operationalStatus = 'operational') => {
-    const total = items.length;
-    const upCount = items.filter(
-      (item) => item[statusKey]?.toLowerCase() === 'up' || item[statusKey]?.toLowerCase() === operationalStatus.toLowerCase()
+  // Utility to calculate active and dead counts
+  const calculateActiveDeadCounts = (items, statusKey = "status", activeStatuses = ["up", "operational"]) => {
+    const activeCount = items.filter((item) =>
+      activeStatuses.includes(item[statusKey]?.toLowerCase())
     ).length;
-    return total > 0 ? upCount / total : 0; 
+    const deadCount = items.length - activeCount;
+    return { active: activeCount, dead: deadCount, total: items.length };
   };
 
-  //   const calculatePercentageDGR = (items, statusKey = 'status', operationalStatus = 'dyinggaspreceived') => {
-  //   const total = items.length;
-  //   const upCount = items.filter(
-  //     (item) => item[statusKey]?.toLowerCase() === 'dyinggaspreceived' 
-  //   ).length;
-  //   return total > 0 ? upCount / total : 0; 
-  // };
-
-  // const calculatePercentageOthers = (items, statusKey = 'status', operationalStatus = 'operational') => {
-  //   const total = items.length;
-  //   const upCount = items.filter(
-  //     (item) => item[statusKey]?.toLowerCase() === 'down' 
-  //   ).length;
-  //   return total > 0 ? upCount / total : 0; 
-  // };
-
   // Filter data by the selected Central Office
-  const filteredData = selectedCO === 'ALL'
-    ? data.network.centralOffices
-    : data.network.centralOffices.filter((co) => co.description === selectedCO);
+  const filteredData =
+    selectedCO === "ALL"
+      ? data.network.centralOffices
+      : data.network.centralOffices.filter((co) => co.description === selectedCO);
 
-  // Extract percentages for each device type
-  const oltPercentage = calculatePercentage(
+  // Compute active and dead counts for each category
+  const oltCounts = calculateActiveDeadCounts(
     filteredData.flatMap((co) => co.OLTs),
-    'status',
-    'operational'
+    "status",
+    ["up", "operational"]
   );
 
-  const slotPercentage = calculatePercentage(
+  const slotCounts = calculateActiveDeadCounts(
     filteredData.flatMap((co) =>
       co.OLTs.flatMap((olt) => olt.slots)
     ),
-    'status',
-    'operational'
+    "status",
+    ["up", "operational"]
   );
 
-  const ponPortPercentage = calculatePercentage(
+  const ponPortCounts = calculateActiveDeadCounts(
     filteredData.flatMap((co) =>
       co.OLTs.flatMap((olt) =>
         olt.slots.flatMap((slot) => slot.PONPorts)
       )
     ),
-    'status',
-    'up'
+    "status",
+    ["up"]
   );
 
-  const ontPercentage = calculatePercentage(
+  const ontCounts = calculateActiveDeadCounts(
     filteredData.flatMap((co) =>
       co.OLTs.flatMap((olt) =>
         olt.slots.flatMap((slot) =>
@@ -67,12 +52,15 @@ function GuageChart({ data }) {
         )
       )
     ),
-    'status',
-    'up'
+    "status",
+    ["up"]
   );
 
   // Get Central Office options for the dropdown
-  const centralOfficeOptions = ['ALL', ...data.network.centralOffices.map((co) => co.description)];
+  const centralOfficeOptions = ["ALL", ...data.network.centralOffices.map((co) => co.description)];
+
+  // Utility to compute percentage
+  const computePercentage = ({ active, total }) => (total > 0 ? active / total : 0);
 
   return (
     <div>
@@ -92,20 +80,21 @@ function GuageChart({ data }) {
         </select>
       </div>
 
-      {/* Gauge Charts */}
-      <div className="flex justify-between items-center w-50">
+      <div className="flex flex-row items-center space-x-6">
         {/* OLT Gauge */}
         <div className="text-black text-center">
           <GaugeChart
             id="gauge-chart-olt"
             nrOfLevels={25}
-            colors={['#00FF00', '#FF0000']}
+            colors={["#00FF00", "#FF0000"]}
             arcWidth={0.3}
-            percent={oltPercentage}
-            textColor=""
+            percent={computePercentage(oltCounts)}
+            textColor="#000000"
           />
           <h3>OLTs</h3>
-          <p>Percentage: {(oltPercentage * 100).toFixed(1)}%</p>
+          <p>
+            Active: {oltCounts.active}, Dead: {oltCounts.dead} (Total: {oltCounts.total})
+          </p>
         </div>
 
         {/* Slot Gauge */}
@@ -113,13 +102,15 @@ function GuageChart({ data }) {
           <GaugeChart
             id="gauge-chart-slot"
             nrOfLevels={25}
-            colors={['#00FF00', '#FF0000']}
+            colors={["#00FF00", "#FF0000"]}
             arcWidth={0.3}
-            percent={slotPercentage}
-            textColor=""
+            percent={computePercentage(slotCounts)}
+            textColor="#000000"
           />
           <h3>Slots</h3>
-          <p>Percentage: {(slotPercentage * 100).toFixed(1)}% are Up and Active {slotPercentage}</p>
+          <p>
+            Active: {slotCounts.active}, Dead: {slotCounts.dead} (Total: {slotCounts.total})
+          </p>
         </div>
 
         {/* PON Port Gauge */}
@@ -127,13 +118,15 @@ function GuageChart({ data }) {
           <GaugeChart
             id="gauge-chart-ponport"
             nrOfLevels={25}
-            colors={['#00FF00', '#FF0000']}
+            colors={["#00FF00", "#FF0000"]}
             arcWidth={0.3}
-            percent={ponPortPercentage}
-            textColor=""
+            percent={computePercentage(ponPortCounts)}
+            textColor="#000000"
           />
           <h3>PON Ports</h3>
-          <p>Percentage: {(ponPortPercentage * 100).toFixed(1)}%</p>
+          <p>
+            Active: {ponPortCounts.active}, Dead: {ponPortCounts.dead} (Total: {ponPortCounts.total})
+          </p>
         </div>
 
         {/* ONT Gauge */}
@@ -141,17 +134,20 @@ function GuageChart({ data }) {
           <GaugeChart
             id="gauge-chart-ont"
             nrOfLevels={25}
-            colors={['#00FF00', '#FF0000']}
+            colors={["#00FF00", "#FF0000"]}
             arcWidth={0.3}
-            percent={ontPercentage}
-            textColor=""
+            percent={computePercentage(ontCounts)}
+            textColor="#000000"
           />
           <h3>ONTs</h3>
-          <p>Percentage: {(ontPercentage * 100).toFixed(1)}%</p>
+          <p>
+            Active: {ontCounts.active}, Dead: {ontCounts.dead} (Total: {ontCounts.total})
+          </p>
         </div>
       </div>
+
     </div>
   );
 }
 
-export default GuageChart;
+export default GaugeChartComponent;
