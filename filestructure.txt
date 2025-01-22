@@ -18,6 +18,7 @@
     |-- assets
         |-- causion.png
         |-- check.png
+        |-- CollapsibleNav.jsx
         |-- dropdown_arrow2-512.webp
         |-- error-icon-4.png
         |-- react.svg
@@ -27,6 +28,8 @@
         |-- Guage.jsx
         |-- GuageChart.jsx
         |-- hell.jsx
+        |-- red
+            |-- CollapsibleNav.jsx
         |-- something.css
         |-- Status.jsx
         |-- TreeView.jsx
